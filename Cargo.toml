@@ -1,0 +1,24 @@
+[package]
+name = "hueble_rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+image = "0.24"
+urlencoding = "2.1"
+uuid = "1.3"
+futures = "0.3"
+bluer = { version = "0.17.3", features = ["full"] }
+tokio = { version = "1.42.0", features = ["full"] }
+rand = "0.8.5"
+
+[dependencies.kmeans_colors]
+version = "0.6.0"
+features = ["palette_color"]
+default-features = false
+
+[dependencies.palette]
+version = "0.7"
+default-features = false
+features = ["std"]
+
