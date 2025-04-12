@@ -11,6 +11,7 @@ futures = "0.3"
 bluer = { version = "0.17.3", features = ["full"] }
 tokio = { version = "1.42.0", features = ["full"] }
 rand = "0.8.5"
+clap = "4.5.23"
 
 [dependencies.kmeans_colors]
 version = "0.6.0"

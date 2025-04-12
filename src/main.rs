@@ -1,3 +1,4 @@
+use clap::Parser;
 use palette::LinSrgb;
 use rand::Rng;
 use std::{
@@ -16,7 +17,7 @@ use hueble_rs::{
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let colors: Vec<ColorPercentPair> = wallpaper::get_dominant_colors(5)?;
+    let colors: Vec<ColorPercentPair> = wallpaper::get_dominant_colors(10)?;
     let lin_colors: Vec<LinSrgb> = colors.iter().map(|(srgb, _p)| srgb.into_format()).collect();
 
     //colors.sort_unstable_by(|a, b| b.1.total_cmp(&a.1));
@@ -42,17 +43,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
     loop {
         let next_color = color_stream.next().unwrap();
 
-        let max_transition_duration = 4000;
-        let steps = 10;
-        let max_step_duration = max_transition_duration / steps;
+        let max_transition_duration = 10000;
+        let max_step_duration = 100;
+        let steps = max_transition_duration / max_step_duration;
 
         for step in 0..steps {
             let t = step as f32 / steps as f32;
 
             let srgb_color: LinSrgb = interpolate_colors(current_color, next_color, t);
             print_color(&srgb_color);
-
-            let sleep_duration = rand::thread_rng().gen_range(1..max_step_duration);
 
             tokio::select! {
                 _ = &mut ctrl_c => {
@@ -61,7 +60,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     return Ok(());
                 }
                 _ = lamp.set_color(&srgb_color) => {
-                    sleep(Duration::from_millis(sleep_duration)).await;
+                    sleep(Duration::from_millis(max_step_duration)).await;
                 }
             }
         }
